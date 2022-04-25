@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ca-central-1
+      - name: sam build
+        run: |
+          sam build --template-file template.yaml
+      - name: sam deployment
+        run: |
+          sam package --output-template-file packaged.yaml --s3-bucket knorketlambda
+          sam deploy --template-file packaged.yaml --stack-name correlation-production  --s3-bucket knorketlambda	 --capabilities CAPABILITY_IAM --region ca-central-1

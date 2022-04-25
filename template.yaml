@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  correlation
+
+  Sample SAM Template for correlation
+
+Resources:
+  correlationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: correlation/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Timeout: 900
+      MemorySize: 256
+
+Outputs:
+  correlationFunction:
+    Description: "correlationLambda Function ARN"
+    Value: !GetAtt correlationFunction.Arn
+  correlationFunctionIamRole:
+    Description: "Implicit IAM Role created for correlation function"
+    Value: !GetAtt correlationFunctionRole.Arn
